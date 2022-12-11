@@ -51,3 +51,4 @@ boot <- bootstrap()
 plot(density(boot$sigmasq))
 
 
+
