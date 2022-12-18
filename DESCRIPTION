@@ -6,17 +6,14 @@ Authors@R:
            comment = c(ORCID = "YOUR-ORCID-ID"))
     person("Zixuan", "Yang", , "zyang548@uwo.ca", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: We give the point estimators of a Poisson GLMM model with random intercept 
-type of random effects, using maximum likelihood based methods. The linear predictor is 
-related to the conditional mean of the response through the log link function. The random effect 
-structure to be considered are either grouping effect or repeat measurement. 
-
-After fitting the model, we use bootstrap to conduct inference, like approximate the 
-sampling distribution of parameters and give the confidence intervals.
-
+Description: We give the point estimators of a Poisson GLMM model with random intercept type of random effects, using maximum likelihood based methods. The linear predictor is related to the conditional mean of the response through the log link function. The random effect structure to be considered are either grouping effect or repeat measurement. After fitting the model, we use bootstrap to conduct inference, like approximate the sampling distribution of parameters and give the confidence intervals.
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
 URL: https://github.com/aljers/GLMMs
 BugReports: https://github.com/aljers/GLMMs/issues
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
