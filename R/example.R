@@ -10,3 +10,7 @@ true_beta <- full_fit$beta
 true_sigmasq <- full_fit$sigmasq
 
 boot <- bootstrap(epilepsy, subject_index = 1, B = 100, true_beta, true_sigmasq)
+boot %>% group_by(term) %>% summarise(estimates = mean(estimate),
+                                      se = sd(estimate),
+                                      LowerCI = quantile(estimate,0.025),
+                                      UpperCI = quantile(estimate,0.975))
