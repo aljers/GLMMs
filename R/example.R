@@ -8,12 +8,13 @@ epilepsy <- epilepsy %>%
 full_fit <- run_model(epilepsy,example = "epilepsy")
 true_beta <- full_fit$beta
 true_sigmasq <- full_fit$sigmasq
-h0_beta <- true_beta
-h0_beta[4] <- 0
+
 
 boot <- bootstrap(dataset = epilepsy, true_beta, true_sigmasq)
 BS_summary <- BootSummary(boot)
 ## hypothesis test
+h0_beta <- true_beta
+h0_beta[4] <- 0
 boot_h0 <- bootstrap(dataset = epilepsy, h0_beta, true_sigmasq)
 h0_summary <- BootSummary(boot_h0)
 if(0>BS_summary[4,]$LowerCI & 0<BS_summary[4,]$UpperCI){
