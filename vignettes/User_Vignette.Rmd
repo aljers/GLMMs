@@ -19,7 +19,7 @@ library(GLMMs)
 ```
 
 
-To illustrate the use of this package, we choose to use the dataset `epilepsy.csv` for demonstration. This dataset consists of clinical trial records of 59 patients. Each subject was initially monitored for an 8 week baseline period and the number of seizures they had was recorded. Patients were then randomized to one of two treatments, drug (31 patients) or placebo (28 patients), and the number of seizures they had was then counted over the following 8 weeks (recorded as 4 separate two week periods). We will build a Poisson model to explore whether the number of seizures a patient experiences will reduce after using the drug, after accounting for age. This is a repeat measurement experiment with 59 subjects and 2 measurements per subject. 
+To illustrate how to use this package to analysis data, we choose to use the dataset `epilepsy.csv` for demonstration. This dataset consists of clinical trial records of 59 patients. Each subject was initially monitored for an 8 week baseline period and the number of seizures they had was recorded. Patients were then randomized to one of two treatments, drug (31 patients) or placebo (28 patients), and the number of seizures they had was then counted over the following 8 weeks (recorded as 4 separate two week periods). We will build a Poisson model to explore whether the number of seizures a patient experiences will reduce after using the drug, after accounting for age. This is a repeat measurement experiment with 59 subjects and 2 measurements per subject. 
 
 
 ```{r}
