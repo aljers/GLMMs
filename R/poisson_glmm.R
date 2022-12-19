@@ -1,21 +1,40 @@
-library(tidyverse)
-library(dplyr)
-library(lme4)
-source("estimation_functions.R")
+#' Parametric Bootstrap for poisson GLMM
+#'
+#' @description Parametric Bootstrap for poisson GLMM
 
-## Import and mutate the dataset:
+#'
+#' @param dataset table: In this dataset, we have one response and one variable indicates groups/subjects the input dataset.
+#' @param true_beta vector: the prior value of coefficients used to generate linear predictor, eta.
+#' @param true_sigmasq numeric: non-negative. The standard deviation of the random effect. In this project, we assume all the random effect has equal standard deviation.
+#' @param subject_index integer: a index states which column of dataset is used the first as the group/subject indicator. The default value is subject_index = 1 means column(row) is used as group/subject index.
+#' @param B integer:positive. The resample size of Bootstrap method. The default size is 100.
+#'
+#' @details
+#' To be convince, let i be the number of groups/subjects, j be the number of
+#' repeated measurement for each subject, B be the number of bootstrap loop (
+#' dafult value is 100)
+#' Conduct bootstrap:\n
+#' 1.Resample k random effects, where k = i * B = (# of subjects/groups * # of
+#' bootstrap iteration).\n
+#' 2.Repeat every generated random effect j times, where j is the number of
+#' repeated measurement.\n
+#' 3.Bind these random effects with intercept and fixed effects provided in
+#' argument 'dataset' to construct design matrix.\n
+#' 4.Calculate linear predictor eta, and hence compute corresponding expected
+#' value of the response variable.\n
+#'
+#' @return table: a summary table with 8 columns.
+#' @import tidyverse,lme4,broom.mixed
+#' @export
+#'
+#' @examples
 
-
-## Conduct bootstrap:
-## Resample 29 id's from `treat == 0` and 30 id's from `treat == 1`, choose all the
-## attributes within each id.
-## Repeat this for N times.
-
-
-bootstrap <- function(dataset, subject_index = 1, B = 100, true_beta, true_sigmasq){
-
+bootstrap <- function(dataset, true_beta, true_sigmasq, subject_index = 1, B = 100){
+  # obtain number of subjects and number of repeat measurement for each subject
+  # according to subject_index
   n_sub <- nrow(unique(dataset %>% select(subject_index)))
   n_rep <- nrow(dataset)/n_sub
+
   z_i <- rep(rnorm(B*n_sub,0,sqrt(true_sigmasq)),each=2)
   mu_sample <- exp(rep(as.matrix(dataset  %>%
                                    mutate(intercept = rep(1,n()),
@@ -32,4 +51,3 @@ bootstrap <- function(dataset, subject_index = 1, B = 100, true_beta, true_sigma
     summarise(tidy(glmer(seizures ~ age + expind + expind:treat + (1|id), family = poisson)),
               .groups = 'drop')
 }
-
