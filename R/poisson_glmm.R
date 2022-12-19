@@ -12,33 +12,34 @@
 #' To be convince, let i be the number of groups/subjects, j be the number of
 #' repeated measurement for each subject, B be the number of bootstrap loop (
 #' dafult value is 100)
-#' Conduct bootstrap:\n
+#' Conduct bootstrap:
 #' 1.Resample k random effects, where k = i * B = (# of subjects/groups * # of
-#' bootstrap iteration).\n
+#' bootstrap iteration).
 #' 2.Repeat every generated random effect j times, where j is the number of
-#' repeated measurement.\n
+#' repeated measurement.
 #' 3.Bind these random effects with intercept and fixed effects provided in
-#' argument 'dataset' to construct design matrix.\n
+#' argument 'dataset' to construct design matrix.
 #' 4.Calculate linear predictor eta, and hence compute corresponding expected
-#' value of the response variable.\n
+#' value of the response variable.
 #'
 #' @return table: a summary table with 8 columns.
-#' @import tidyverse,lme4,broom.mixed
-#' @export
 #'
 #' @examples
 #' ## provide prior coefficients and sigmasq for generating random effect
 #' full_fit <- run_model(epilepsy,example = "epilepsy")
 #' true_beta <- full_fit$beta
 #' true_sigmasq <- full_fit$sigmasq
-#' #################################################################################
-#' ## run bootstrap with epilepsy data. We use true_beta for conducting linear    ##
-#' ## Run bootstrap with epilepsy data. We use true_beta for conducting linear    ##
-#' ## predictors, true_sigmasq for generating random effects. We identify the     ##
-#' ## first column as the subject index and set the bootstrap resample size be 100##
-#' #################################################################################
+#' ## run bootstrap with epilepsy data. We use true_beta for conducting linear
+#' ## Run bootstrap with epilepsy data. We use true_beta for conducting linear
+#' ## predictors, true_sigmasq for generating random effects. We identify the
+#' ## first column as the subject index and set the bootstrap resample size be 100
 #' boot <- bootstrap(dataset = epilepsy, true_beta, true_sigmasq, subject_index = 1, B = 100)
-
+#' @import tidyverse
+#' @importFrom  readr read_csv
+#' @import dplyr
+#' @importFrom lme4 glmer
+#' @import broom.mixed
+#' @export
 bootstrap <- function(dataset, beta, sigmasq, subject_index = 1, B = 100){
   # obtain number of subjects and number of repeat measurement for each subject
   # according to subject_index
