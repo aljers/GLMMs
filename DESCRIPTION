@@ -16,4 +16,5 @@ BugReports: https://github.com/aljers/GLMMs/issues
 Suggests: 
     knitr,
     rmarkdown
+Imports: broom.mixed, dplyr, lme4, readr, tidyverse
 VignetteBuilder: knitr
