@@ -32,25 +32,20 @@
 #' true_beta <- full_fit$beta
 #' true_sigmasq <- full_fit$sigmasq
 #' #################################################################################
-<<<<<<< HEAD
 #' ## run bootstrap with epilepsy data. We use true_beta for conducting linear    ##
-=======
 #' ## Run bootstrap with epilepsy data. We use true_beta for conducting linear    ##
->>>>>>> 95289236b160154b8694bc8cf0d10e36aa2ea70d
 #' ## predictors, true_sigmasq for generating random effects. We identify the     ##
 #' ## first column as the subject index and set the bootstrap resample size be 100##
 #' #################################################################################
 #' boot <- bootstrap(dataset = epilepsy, true_beta, true_sigmasq, subject_index = 1, B = 100)
 
 bootstrap <- function(dataset, beta, sigmasq, subject_index = 1, B = 100){
-<<<<<<< HEAD
   # obtain number of subjects and number of repeat measurement for each subject
   # according to subject_index
   n_sub <- nrow(unique(dataset %>% select(subject_index)))
   n_rep <- nrow(dataset)/n_sub
   # generate random effect with given sigmasq
   z_i <- rep(rnorm(B*n_sub,0,sqrt(sigmasq)),each=2)
-=======
   # Obtain number of subjects and number of repeat measurement for each subject
   # According to subject_index
   n_sub <- nrow(unique(dataset %>% select(subject_index)))
@@ -65,29 +60,14 @@ bootstrap <- function(dataset, beta, sigmasq, subject_index = 1, B = 100){
   # The following code combines two steps.
   # 1. Use design matrix and beta vector to calculate linear predictors.
   # 2. Transform the linear predictors via link function.
->>>>>>> 95289236b160154b8694bc8cf0d10e36aa2ea70d
   mu_sample <- exp(rep(as.matrix(dataset  %>%
                                    mutate(intercept = rep(1,n()), # Create a new column for intercept term
                                                                   # and a new column for the interaction
                                                                   # between expind and treat.
                                           interact = expind*treat) %>%
-<<<<<<< HEAD
                                    select(intercept, age, expind, interact) ) %*%
-                         beta, B) +
-                     z_i)
-  data_sample <- dataset %>%
-    select(-seizures) %>%
-    slice(rep(1:n(), B)) %>%
-    mutate(seizures = rpois(length(mu_sample),
-                            mu_sample),
-           Boot = rep(1:B,each = nrow(dataset)))
-=======
-                                   select(intercept, age, expind, interact)) # Select design matrix
-                       %*% # matrix multiplication between design matrix and beta
-                       beta, B) + # Since the design matrix only contains intercept and
-                                    # fixed effect, we simply repeat the design matrix  B
-                                    # times to match the dimension of the random effect vector
-                     z_i) #add random effect vector
+                         beta, B) + z_i) #add random effect vector
+
   # Then, we replace the original response value by the random generation for
   # poisson distributed response.
   data_sample <- dataset %>%
@@ -98,7 +78,6 @@ bootstrap <- function(dataset, beta, sigmasq, subject_index = 1, B = 100){
            Boot = rep(1:B,each = nrow(dataset))# index for bootstrap runs
            )
   # Finally, we fit GLMM with generated data and store all of them together as function return
->>>>>>> 95289236b160154b8694bc8cf0d10e36aa2ea70d
   return(data_sample %>%
            group_by(Boot) %>%
            summarise(tidy(glmer(seizures ~ age + expind + expind:treat + (1|id),
