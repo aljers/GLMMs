@@ -6,7 +6,20 @@ Authors@R:
            comment = c(ORCID = "YOUR-ORCID-ID"))
     person("Zixuan", "Yang", , "zyang548@uwo.ca", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: We give the point estimators of a Poisson GLMM model with random intercept type of random effects, using maximum likelihood based methods. The linear predictor is related to the conditional mean of the response through the log link function. The random effect structure to be considered are either grouping effect or repeat measurement. After fitting the model, we use bootstrap to conduct inference, like approximate the sampling distribution of parameters and give the confidence intervals.
+Description: We give the point estimators of a Poisson GLMM model with random 
+intercept type of random effects, using maximum likelihood based methods. 
+The linear predictor is related to the conditional mean of the response through 
+the log link function. The random effect structure to be considered are either 
+grouping effect or repeat measurement. After fitting the model, we use bootstrap 
+to conduct inference, like approximate the sampling distribution of parameters 
+and give the confidence intervals. The bootstrap process is as follows: first we 
+resample k random effects, where k is equal to the number of subjects/groups times 
+the number of bootstrap iteration. The bootstrap iteration is defaulted to 100. 
+Next, repeat every generated random effect j times, where j is the number of repeated 
+measurement. Then, bind these random effects with intercept and fixed effects in
+our dataset to construct the design matrix. Finally calculate the linear predictor, 
+and hence compute corresponding expected value of the response variable.
+
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
