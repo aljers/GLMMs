@@ -1,7 +1,6 @@
 #' Parametric Bootstrap for poisson GLMM
 #'
 #' @description Parametric Bootstrap for poisson GLMM
-
 #'
 #' @param dataset table: In this dataset, we have one response and one variable indicates groups/subjects the input dataset.
 #' @param true_beta vector: the prior value of coefficients used to generate linear predictor, eta.
@@ -28,26 +27,40 @@
 #' @export
 #'
 #' @examples
+#' ## provide prior coefficients and sigmasq for generating random effect
+#' full_fit <- run_model(epilepsy,example = "epilepsy")
+#' true_beta <- full_fit$beta
+#' true_sigmasq <- full_fit$sigmasq
+#' #################################################################################
+#' ## run bootstrap with epilepsy data. We use true_beta for conducting linear    ##
+#' ## predictors, true_sigmasq for generating random effects. We identify the     ##
+#' ## first column as the subject index and set the bootstrap resample size be 100##
+#' #################################################################################
+#' boot <- bootstrap(dataset = epilepsy, true_beta, true_sigmasq, subject_index = 1, B = 100)
 
-bootstrap <- function(dataset, true_beta, true_sigmasq, subject_index = 1, B = 100){
+bootstrap <- function(dataset, beta, sigmasq, subject_index = 1, B = 100){
   # obtain number of subjects and number of repeat measurement for each subject
   # according to subject_index
   n_sub <- nrow(unique(dataset %>% select(subject_index)))
   n_rep <- nrow(dataset)/n_sub
-
-  z_i <- rep(rnorm(B*n_sub,0,sqrt(true_sigmasq)),each=2)
+  # generate random effect with given sigmasq
+  z_i <- rep(rnorm(B*n_sub,0,sqrt(sigmasq)),each=2)
   mu_sample <- exp(rep(as.matrix(dataset  %>%
                                    mutate(intercept = rep(1,n()),
                                           interact = expind*treat) %>%
                                    select(intercept, age, expind, interact) ) %*%
-                         true_beta, B)+z_i)
+                         beta, B) +
+                     z_i)
   data_sample <- dataset %>%
     select(-seizures) %>%
     slice(rep(1:n(), B)) %>%
-    mutate(seizures = rpois(length(mu_sample),mu_sample),
+    mutate(seizures = rpois(length(mu_sample),
+                            mu_sample),
            Boot = rep(1:B,each = nrow(dataset)))
-  data_sample %>%
-    group_by(Boot) %>%
-    summarise(tidy(glmer(seizures ~ age + expind + expind:treat + (1|id), family = poisson)),
-              .groups = 'drop')
+  return(data_sample %>%
+           group_by(Boot) %>%
+           summarise(tidy(glmer(seizures ~ age + expind + expind:treat + (1|id),
+                                family = poisson)),
+                     .groups = 'drop') %>%
+           arrange(term))
 }
